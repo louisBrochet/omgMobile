@@ -9,7 +9,7 @@ import {
   TextInput,
   ToastAndroid,
 } from 'react-native';
-import {postTag} from '../services/omgService';
+import {postSimpleTag} from '../services/omgService';
 
 class ActivateModal extends Component {
   state = {
@@ -48,15 +48,13 @@ class ActivateModal extends Component {
                   style={styles.discardBtn}
                   onPress={() => {
                     this.setModalVisible(!modalVisible);
-                    //let date = new Date();
-                    //ToastAndroid.show(date.toISOString(), ToastAndroid.SHORT);
                   }}>
                   <Text style={styles.btnDiscardText}>Discard</Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                   style={styles.confirmBtn}
                   onPress={() => {
-                    postTag(this.state.inputTag).then((res) => {
+                    postSimpleTag(this.state.inputTag).then((res) => {
                       ToastAndroid.show(res, ToastAndroid.SHORT);
                     });
                     this.setModalVisible(!modalVisible);
