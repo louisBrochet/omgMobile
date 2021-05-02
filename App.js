@@ -3,11 +3,17 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import TabNavigator from './navigators/tabNavigator';
 
+//Redux
+import {Provider} from 'react-redux';
+import Store from './redux/store';
+
 const App = () => {
   return (
-    <NavigationContainer>
-      <TabNavigator />
-    </NavigationContainer>
+    <Provider store={Store}>
+      <NavigationContainer>
+        <TabNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 };
 
