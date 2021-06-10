@@ -6,26 +6,26 @@ import {
   Text,
   TouchableNativeFeedback,
   ToastAndroid,
-  Button,
-  KeyboardAvoidingView,
 } from 'react-native';
-import {getRecentTags} from '../services/omgService';
+import {getRecentTags, postSimpleTag} from '../services/omgService';
 import AsyncStorage from 'react-native/Libraries/Storage/AsyncStorage';
 import {connect} from 'react-redux';
 import {TextInput} from 'react-native-gesture-handler';
+import DatePicker from 'react-native-date-picker';
 
 class ActivateSheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      recent: ['olé'],
+      recent: [],
+      date: new Date(Date.now()),
+      tag: '',
     };
   }
 
   componentDidMount() {
     getRecentTags().then((res) => {
       if (res) {
-        console.log('hahaha');
         this.setState({recent: res});
       } else {
         // this.toSignIn('').then(() => {});
@@ -52,30 +52,73 @@ class ActivateSheet extends Component {
   };
 
   showRecentTags = () => {
-    return (
-      <View style={styles.recentView}>
-        {this.state.recent.map((tag) => (
-          <TouchableNativeFeedback>
-            <Text style={styles.recentBtn}>{tag}</Text>
-          </TouchableNativeFeedback>
-        ))}
-      </View>
-    );
+    if (this.state.recent.length > 0) {
+      let recentButtons = this.state.recent.map((tag) => (
+        <TouchableNativeFeedback onPress={this.onRecentTagPressed}>
+          <Text id={tag} style={styles.recentBtn}>
+            {tag}
+          </Text>
+        </TouchableNativeFeedback>
+      ));
+      return <View style={styles.recentView}>{recentButtons}</View>;
+    } else {
+      return (
+        <View style={styles.recentView}>
+          <Text style={styles.noRecentText}>No tag previously activated.</Text>
+        </View>
+      );
+    }
+  };
+
+  onDateChange = (event) => {
+    console.log(event);
+    this.setState({date: event});
+  };
+
+  onManualTagChange = (event) => {
+    this.setState({tag: event.nativeEvent.text});
+  };
+
+  onRecentTagPressed = (event) => {
+    console.log(event);
+  };
+
+  activateTag = () => {
+    if (this.state.tag) {
+      postSimpleTag(this.state.tag, this.state.date).then((r) => {
+        ToastAndroid.show(r, ToastAndroid.SHORT);
+      });
+    } else {
+      ToastAndroid.show('You have to choose a tag !', ToastAndroid.SHORT);
+    }
   };
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.mainView} behavior={'height'}>
-        <Text style={styles.title}>Recent tags</Text>
+      <View style={styles.mainView}>
+        <Text style={styles.title}>Choose tag</Text>
+        <Text style={styles.title2}>Recent tags</Text>
         {this.showRecentTags()}
-        <Text style={styles.title}>Enter a tag</Text>
+        <Text style={styles.title2}>Enter a tag</Text>
         <View style={styles.tagInputView}>
-          <TextInput style={styles.tagInput} type="text" />
-          <TouchableNativeFeedback>
-            <Text style={styles.tagBtn}>ok</Text>
-          </TouchableNativeFeedback>
+          <TextInput
+            style={styles.tagInput}
+            type="text"
+            onChange={this.onManualTagChange}
+          />
         </View>
-      </KeyboardAvoidingView>
+        <Text style={styles.titleBis}>Select date</Text>
+        <View style={styles.datetimePicker}>
+          <DatePicker
+            date={this.state.date}
+            onDateChange={this.onDateChange}
+            androidVariant={'nativeAndroid'}
+          />
+        </View>
+        <TouchableNativeFeedback onPress={this.activateTag}>
+          <Text style={styles.activateBtn}>Activate tag</Text>
+        </TouchableNativeFeedback>
+      </View>
     );
   }
 }
@@ -99,8 +142,21 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 20,
-    marginBottom: '3%',
     marginTop: '3%',
+    fontWeight: 'bold',
+  },
+  titleBis: {
+    color: 'white',
+    fontSize: 20,
+    marginTop: '3%',
+    marginBottom: '3%',
+    fontWeight: 'bold',
+  },
+  title2: {
+    color: 'white',
+    fontSize: 16,
+    marginBottom: '1%',
+    marginLeft: '1%',
   },
   tagInputView: {
     flexDirection: 'row',
@@ -114,16 +170,25 @@ const styles = StyleSheet.create({
     flex: 3,
     height: '70%',
   },
-  tagBtn: {
+  activateBtn: {
     backgroundColor: 'white',
-    flex: 1,
     borderRadius: 8,
-    margin: '1%',
+    marginTop: '10%',
     textAlign: 'center',
     textAlignVertical: 'center',
     fontSize: 18,
-    height: '70%',
+    padding: '2%',
+    height: '8%',
+    alignSelf: 'center',
     color: '#007bff',
+  },
+  noRecentText: {
+    color: 'white',
+    marginLeft: '1%',
+  },
+  datetimePicker: {
+    backgroundColor: 'white',
+    borderRadius: 8,
   },
 });
 

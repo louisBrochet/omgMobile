@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import 'react-native-gesture-handler';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {DetailsStackNavigator, HomeStackNavigator} from './stackNavigator';
+import {HomeStackNavigator} from './stackNavigator';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faCoffee, faTags, faChartArea} from '@fortawesome/free-solid-svg-icons';
+import {faTags, faChartArea} from '@fortawesome/free-solid-svg-icons';
 import AsyncStorage from 'react-native/Libraries/Storage/AsyncStorage';
 import {connect} from 'react-redux';
 import {
@@ -11,7 +11,6 @@ import {
   TextInput,
   View,
   Text,
-  ToastAndroid,
   TouchableNativeFeedback,
   KeyboardAvoidingView,
   Keyboard,
@@ -36,6 +35,8 @@ class TabNavigator extends Component {
         verifyToken(token).then((res) => {
           if (!res.ok) {
             this.storeToken('').then(() => {});
+          } else {
+            console.log(token);
           }
         });
       }
@@ -69,6 +70,7 @@ class TabNavigator extends Component {
     if (this.state.email !== '' && this.state.password !== '') {
       signin(this.state.email, this.state.password).then((res) => {
         if (res.status === 'ok') {
+          console.log(res.token);
           this.setApiKey(res.token).then(() => {
             this.storeToken(res.token).then(() => {
               this.setState({email: '', password: '', error: ''});
@@ -142,15 +144,6 @@ class TabNavigator extends Component {
           options={{
             tabBarIcon: ({color, focused, size}) => (
               <FontAwesomeIcon icon={faTags} size={size} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Details"
-          component={DetailsStackNavigator}
-          options={{
-            tabBarIcon: ({color, focused, size}) => (
-              <FontAwesomeIcon icon={faCoffee} size={size} color={color} />
             ),
           }}
         />

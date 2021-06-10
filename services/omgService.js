@@ -8,34 +8,30 @@ const headers = new Headers({
   // 'Accept-Encoding': 'gzip, deflate, br',
 });
 
-export async function postSimpleTag(tag) {
+export async function postSimpleTag(tag, date) {
   try {
-    const url = 'http://192.168.0.20:3001/tags/one';
-    const dateNow = new Date(Date.now());
+    const url = hostUrl + '/tags/one';
     let res = await fetch(url, {
       method: 'POST',
       headers: {
+        Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         tag: tag,
-        startDatetime: dateNow.toISOString(),
-        endDatetime: dateNow.toISOString(),
+        startDatetime: date,
+        endDatetime: date,
       }),
     });
-    console.log(res);
-    if (res.status === 200) {
-      return 'Tag activated';
-    } else {
-      return 'Something wrong happened';
-    }
+    return res.json();
   } catch (e) {
     return e;
   }
 }
 
 export async function signin(email, password) {
+  console.log('connexion');
   let url = hostUrl + '/users/signin';
   let res = await fetch(url, {
     credentials: 'same-origin',

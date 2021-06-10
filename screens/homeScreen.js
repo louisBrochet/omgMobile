@@ -41,7 +41,7 @@ function HomeScreen({navigation: {navigate}}) {
       <View style={styles.contentView} />
       <BottomSheet
         ref={sheetRef}
-        snapPoints={['8%', '60%']}
+        snapPoints={['8%', '80%']}
         renderContent={renderContent}
       />
     </View>
