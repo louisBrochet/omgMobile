@@ -1,5 +1,9 @@
 import store from '../redux/store';
 
+//
+// Service file that contains all the requests for the OMG server API.
+//
+
 const hostUrl = 'http://92.222.24.129:3000';
 const headers = new Headers({
   'Content-Type': 'application/json',
@@ -8,6 +12,13 @@ const headers = new Headers({
   // 'Accept-Encoding': 'gzip, deflate, br',
 });
 
+/**
+ * request for insert activation tag in the database
+ *
+ * @param tag
+ * @param date
+ * @return {Promise<any>} : return result request
+ */
 export async function postSimpleTag(tag, date) {
   try {
     const url = hostUrl + '/tags/one';
@@ -30,8 +41,14 @@ export async function postSimpleTag(tag, date) {
   }
 }
 
+/**
+ * signin request
+ *
+ * @param email
+ * @param password
+ * @return {Promise<any>} : return results
+ */
 export async function signin(email, password) {
-  console.log('connexion');
   let url = hostUrl + '/users/signin';
   let res = await fetch(url, {
     credentials: 'same-origin',
@@ -45,6 +62,11 @@ export async function signin(email, password) {
   return res.json();
 }
 
+/**
+ * recent tags request
+ *
+ * @return {Promise<null|any>} : 8 most recent tags or error
+ */
 export async function getRecentTags() {
   let url = hostUrl + '/tags/recent';
   let res = await fetch(url, {
@@ -65,6 +87,12 @@ export async function getRecentTags() {
   }
 }
 
+/**
+ * verify token request
+ *
+ * @param apiKey
+ * @return {Promise<Response>}
+ */
 export async function verifyToken(apiKey) {
   let url = hostUrl + '/users/verify';
   return await fetch(url, {

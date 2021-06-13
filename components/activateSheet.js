@@ -13,16 +13,20 @@ import {connect} from 'react-redux';
 import {TextInput} from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
 
+/**
+ * activation tag menu. Display activation tag menu
+ */
 class ActivateSheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      recent: [],
-      date: new Date(Date.now()),
-      tag: '',
+      recent: [],   // array for recent tags
+      date: new Date(Date.now()),   // date to initialize datepicker
+      tag: '',  // save chosen tag
     };
   }
 
+  // when component is loaded, retrieves recent tags
   componentDidMount() {
     getRecentTags().then((res) => {
       if (res) {
@@ -51,6 +55,11 @@ class ActivateSheet extends Component {
     }
   };
 
+  /**
+   * Displays recent tags
+   *
+   * @return {JSX.Element}
+   */
   showRecentTags = () => {
     if (this.state.recent.length > 0) {
       let recentButtons = this.state.recent.map((tag) => (
@@ -83,6 +92,9 @@ class ActivateSheet extends Component {
     console.log(event);
   };
 
+  /**
+   * Manage insert activation tag request. called when activate tag btn pressed
+   */
   activateTag = () => {
     if (this.state.tag) {
       postSimpleTag(this.state.tag, this.state.date).then((r) => {

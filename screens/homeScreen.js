@@ -12,6 +12,13 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import ActivateSheet from '../components/activateSheet';
 import AsyncStorage from 'react-native/Libraries/Storage/AsyncStorage';
 
+/**
+ *  Home screen of the application
+ *
+ * @param navigate
+ * @return {JSX.Element}
+ * @constructor
+ */
 function HomeScreen({navigation: {navigate}}) {
   const sheetRef = React.useRef(null);
   let tgl = 0;
@@ -25,6 +32,11 @@ function HomeScreen({navigation: {navigate}}) {
     sheetRef.current.snapTo(tgl);
   };
 
+  /**
+   * Displays the bottom sheet that contains the activation tag sheet (menu)
+   *
+   * @return {JSX.Element}
+   */
   const renderContent = () => (
     <View style={styles.bottomSheet}>
       <TouchableNativeFeedback onPress={toggleSheet}>

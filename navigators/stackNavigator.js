@@ -8,6 +8,12 @@ const headerText = 'gray';
 
 const HomeStack = createStackNavigator();
 
+/**
+ * navigator used to display the top bar application. One navigator per screen.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 const HomeStackNavigator = () => {
   return (
     <HomeStack.Navigator

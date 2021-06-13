@@ -19,6 +19,9 @@ import {signin, verifyToken} from '../services/omgService';
 
 const Tab = createBottomTabNavigator();
 
+/**
+ * Navigation component. (bottom tab bar)
+ */
 class TabNavigator extends Component {
   constructor(props) {
     super(props);
@@ -30,22 +33,22 @@ class TabNavigator extends Component {
   }
 
   componentDidMount() {
-    this.getToken().then((token) => {
-      if (token !== '') {
-        verifyToken(token).then((res) => {
+    // manages auto connection
+    this.getToken().then((token) => {   // retrieve the token stored in the phone
+      if (token !== '') {   // if the token is not blank
+        verifyToken(token).then((res) => {    // check the validity of the token with the API
           if (!res.ok) {
-            this.storeToken('').then(() => {});
-          } else {
-            console.log(token);
+            this.storeToken('').then(() => {});   // if the token not valid. it is deleted in the storage
           }
         });
       }
     });
-    this.getToken().then((token) => {
-      this.setApiKey(token).then(() => {});
+    this.getToken().then((token) => {   // retrieve the token stored in the phone
+      this.setApiKey(token).then(() => {});   // save the token in the redux store
     });
   }
 
+  // Store the token in the phone storage
   async storeToken(token) {
     try {
       await AsyncStorage.setItem('global.token', token);
@@ -54,6 +57,7 @@ class TabNavigator extends Component {
     }
   }
 
+  //retrieve the token from the phone storage
   async getToken() {
     try {
       return await AsyncStorage.getItem('global.token');
@@ -65,6 +69,9 @@ class TabNavigator extends Component {
   setEmail = (text) => this.setState({email: text});
   setPassword = (text) => this.setState({password: text});
 
+  /**
+   * method called when the signin btn pressed
+   */
   handleSignIn = () => {
     Keyboard.dismiss();
     if (this.state.email !== '' && this.state.password !== '') {
@@ -85,10 +92,16 @@ class TabNavigator extends Component {
     }
   };
 
+  // save the apiKey in the redux store
   async setApiKey(apiKey) {
     await this.props.dispatch({type: 'SETKEY', value: apiKey});
   }
 
+  /**
+   * displays errors when they occur
+   *
+   * @return {JSX.Element}
+   */
   showError() {
     let message = <Text />;
     if (this.state.error !== '') {
@@ -97,8 +110,13 @@ class TabNavigator extends Component {
     return message;
   }
 
+  /**
+   * manage authentification and routing
+   *
+   * @return {JSX.Element}
+   */
   render() {
-    return !this.props.apiKey ? (
+    return !this.props.apiKey ? (   // if not connected (apikey redux store empty) render signin screen
       <View style={styles.containerSignIn}>
         <StatusBar barStyle="light-content" backgroundColor="#007bff" />
         <KeyboardAvoidingView style={styles.containerKeyboard} behavior={''}>
@@ -136,7 +154,7 @@ class TabNavigator extends Component {
           </View>
         </KeyboardAvoidingView>
       </View>
-    ) : (
+    ) : (   // if connected render tab navigator
       <Tab.Navigator>
         <Tab.Screen
           name="Home"

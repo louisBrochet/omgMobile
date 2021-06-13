@@ -1,5 +1,12 @@
 const initState = {apiKey: ''};
 
+/**
+ * API key store
+ *
+ * @param state
+ * @param action
+ * @return {{apiKey}|{apiKey: string}}
+ */
 function storeApiKey(state = initState, action) {
   let nextState;
   switch (action.type) {
